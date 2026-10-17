@@ -116,4 +116,5 @@ test/                    # 16 unit + 12 integration tests
 
 - ดึงราคาสดผ่าน `PRICE_API_URL` + cache ต่อสินค้า
 - เก็บคลิกแบบถาวร + dashboard รายวัน
-- หน้า `/c/:slug` แบบ SEO แยกตามหมวด (มี route รองรับแล้ว)
+- หน้า `/c/:slug` แบบ SEO แยกตามหมวด (มี route รองรับแล้ว)#   C h e c k p r i c e  
+ 
