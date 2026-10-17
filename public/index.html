@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PriceHub TH — เทียบราคา Shopee x Lazada</title>
+  <meta name="description" content="วางลิงก์สินค้า Shopee หรือ Lazada ระบบจะแปลงเป็นลิงก์ affiliate พร้อมเทียบราคาทั้งสองแพลตฟอร์มให้ทันที" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">฿</span>
+      <span class="brand-text">PriceHub <b>TH</b></span>
+    </a>
+    <nav class="nav">
+      <a href="#compare">เทียบราคา</a>
+      <a href="#catalog">สินค้า</a>
+      <a href="#how">วิธีทำงาน</a>
+    </nav>
+    <div class="top-status" id="topStatus">
+      <span class="dot"></span> กำลังโหลดสถานะ…
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO / URL CONVERTER ============ -->
+    <section class="hero" id="compare">
+      <div class="hero-inner">
+        <h1>วางลิงก์สินค้า<br /><span class="grad">ได้ทั้ง Shopee และ Lazada</span></h1>
+        <p class="sub">
+          ระบบจะแปลงลิงก์ของคุณเป็นลิงก์ Affiliate พร้อมผูก SubID อัตโนมัติ
+          และเทียบราคาทั้งสองแพลตฟอร์มให้ในหน้าเดียว
+        </p>
+
+        <form class="linkbox" id="convertForm" autocomplete="off">
+          <input
+            id="urlInput"
+            name="url"
+            type="text"
+            inputmode="url"
+            placeholder="https://shopee.co.th/product/.... หรือ https://www.lazada.co.th/products/..."
+            aria-label="ลิงก์สินค้า"
+          />
+          <button type="submit" id="convertBtn">เทียบราคาเลย</button>
+        </form>
+        <div class="hint">
+          <span class="pill pill-shopee">Shopee</span>
+          <span class="pill pill-lazada">Lazada</span>
+          <span class="hint-text" id="hintText">ทดสอบได้ทันทีด้วยลิงก์ตัวอย่างในตารางด้านล่าง</span>
+        </div>
+
+        <!-- ผลการแปลงลิงก์ -->
+        <div class="result" id="result" hidden></div>
+      </div>
+    </section>
+
+    <!-- ============ STATUS STRIP ============ -->
+    <section class="strip" id="strip">
+      <div class="strip-item"><span class="k">แหล่งราคา</span><span class="v" id="statPrice">—</span></div>
+      <div class="strip-item"><span class="k">Shopee Affiliate</span><span class="v" id="statShopee">—</span></div>
+      <div class="strip-item"><span class="k">Lazada Affiliate</span><span class="v" id="statLazada">—</span></div>
+      <div class="strip-item"><span class="k">คลิกสะสม</span><span class="v" id="statClicks">0</span></div>
+    </section>
+
+    <!-- ============ CATALOG ============ -->
+    <section class="catalog" id="catalog">
+      <div class="section-head">
+        <h2>สินค้าแนะนำตามหมวดหมู่</h2>
+        <div class="tools">
+          <input id="searchInput" type="search" placeholder="ค้นหาสินค้า…" aria-label="ค้นหาสินค้า" />
+          <select id="sortSelect" aria-label="เรียงลำดับ">
+            <option value="diff">ส่วนต่างราคาสูงสุด</option>
+            <option value="price-asc">ราคาถูกสุด</option>
+            <option value="price-desc">ราคาแพงสุด</option>
+            <option value="name">ชื่อสินค้า (ก-ฮ)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="chips" id="catChips" role="tablist" aria-label="หมวดหมู่สินค้า">
+        <button class="chip active" data-cat="all">ทั้งหมด</button>
+      </div>
+
+      <div class="grid" id="grid" aria-live="polite"></div>
+      <p class="empty" id="empty" hidden>ไม่พบสินค้าที่คุณค้นหา</p>
+    </section>
+
+    <!-- ============ WORKFLOW ============ -->
+    <section class="how" id="how">
+      <h2>แนวทางการทำงานของระบบ</h2>
+      <div class="steps">
+        <article class="step">
+          <div class="step-n">1</div>
+          <h3>ผู้ใช้ส่งลิงก์</h3>
+          <p>วางลิงก์สินค้า Shopee หรือ Lazada ลงในช่องด้านบน ระบบตรวจสอบแพลตฟอร์มและดึง itemId ออกมา</p>
+        </article>
+        <article class="step">
+          <div class="step-n">2</div>
+          <h3>แปลงลิงก์ (URL Converter)</h3>
+          <p>เรียก Shopee Affiliate GraphQL <code>generateShortLink</code> เพื่อเปลี่ยนลิงก์ธรรมดาเป็นลิงก์ที่ผูก SubID
+             ฝั่ง Lazada ใช้เทมเพลต affiliate ที่ตั้งค่าไว้ (รองรับ API ของคุณเอง)</p>
+        </article>
+        <article class="step">
+          <div class="step-n">3</div>
+          <h3>แสดงผลเปรียบเทียบ</h3>
+          <p>แสดงปุ่ม “สั่งซื้อที่ Shopee” / “สั่งซื้อที่ Lazada” ที่ผูก affiliate แล้ว พร้อมบอกว่าที่ไหนถูกกว่ากี่บาท
+             และแยกหมวดหมู่สินค้าชัดเจน</p>
+        </article>
+      </div>
+
+      <div class="flow">
+        <div class="flow-node">ลิงก์ผู้ใช้</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">URL Parser</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">Affiliate <b>generateShortLink</b></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">cache 24 ชม.</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node accent">/go/… นับคลิก → 302 ออก</div>
+      </div>
+
+      <h3 class="sub-h">สถิติการคลิกลิงก์</h3>
+      <div class="stats-cards">
+        <div class="stat-card">
+          <div class="stat-ic shopee">S</div>
+          <div><b id="clickShopee">0</b><span>คลิก Shopee</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ic lazada">L</div>
+          <div><b id="clickLazada">0</b><span>คลิก Lazada</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-ic total">Σ</div>
+          <div><b id="clickTotal">0</b><span>คลิกรวม</span></div>
+        </div>
+      </div>
+      <div class="recent" id="recentClicks" hidden>
+        <h3 class="sub-h">คลิกล่าสุด</h3>
+        <ul></ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <b>PriceHub TH</b> — เว็บเปรียบเทียบราคาสินค้า พร้อมแปลงลิงก์ Affiliate อัตโนมัติ
+    </div>
+    <div class="foot-note" id="disclaimer"></div>
+    <div class="foot-note">ลิงก์ทั้งหมดเป็น affiliate link: หากคุณซื้อผ่านลิงก์ เว็บอาจได้รับค่าคอมมิชชันโดยไม่มีผลกับราคาที่คุณจ่าย</div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
